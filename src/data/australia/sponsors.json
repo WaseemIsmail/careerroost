@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "NHS Trust",
+    "city": "London",
+    "sector": "Healthcare",
+    "sponsorship": true,
+    "website": "https://www.nhs.uk"
+  },
+  {
+    "id": 2,
+    "name": "Infosys UK",
+    "city": "Manchester",
+    "sector": "IT",
+    "sponsorship": true,
+    "website": "https://www.infosys.com"
+  }
+]
