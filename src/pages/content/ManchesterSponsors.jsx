@@ -4,56 +4,45 @@ import SeoHead from "../../components/seo/SeoHead";
 import SectionHeading from "../../components/common/SectionHeading";
 import CompanyCard from "../../components/sponsor/CompanyCard";
 import EmptyState from "../../components/common/EmptyState";
-import PopularCities from "../../components/sponsor/PopularCities";
 import Breadcrumbs from "../../components/common/Breadcrumbs";
 import { getAllSponsors } from "../../services/sponsorService";
 
-function CareHomes() {
+function ManchesterSponsors() {
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadCareHomes = async () => {
+    const loadManchesterSponsors = async () => {
       try {
         setLoading(true);
 
         const data = await getAllSponsors();
 
         const filtered = data.filter((company) => {
-          const sector = (company.sector || "").toLowerCase();
-          const name = (company.name || "").toLowerCase();
-
-          return (
-            company.sponsorship &&
-            (
-              sector.includes("healthcare") ||
-              sector.includes("care") ||
-              name.includes("care") ||
-              name.includes("home")
-            )
-          );
+          const city = (company.city || "").toLowerCase();
+          return company.sponsorship && city.includes("manchester");
         });
 
         // 🔥 LIMIT for performance
         setCompanies(filtered.slice(0, 30));
       } catch (error) {
-        console.error("Error loading care home companies:", error);
+        console.error("Error loading Manchester sponsors:", error);
         setCompanies([]);
       } finally {
         setLoading(false);
       }
     };
 
-    loadCareHomes();
+    loadManchesterSponsors();
   }, []);
 
   return (
     <Layout>
       <SeoHead
-        title="Care Homes With Sponsorship in UK | CareerRoost"
-        description="Find care homes in the UK that offer visa sponsorship. Explore caregiving, nursing, and healthcare job opportunities."
-        keywords="care homes sponsorship UK, caregiver jobs UK visa sponsorship, nursing homes UK sponsorship"
-        canonical="/care-homes-with-sponsorship-uk"
+        title="Manchester Visa Sponsoring Companies | CareerRoost"
+        description="Find companies in Manchester that offer visa sponsorship. Explore jobs in IT, healthcare, logistics, and more."
+        keywords="Manchester visa sponsorship, jobs with sponsorship Manchester, skilled worker Manchester companies"
+        canonical="/manchester-visa-sponsors-uk"
       />
 
       <div className="px-4 py-12 max-w-6xl mx-auto space-y-10">
@@ -63,18 +52,15 @@ function CareHomes() {
           items={[
             { label: "Home", path: "/" },
             { label: "Visa Sponsors UK", path: "/companies-that-sponsor-visa-uk" },
-            { label: "Care Homes" },
+            { label: "Manchester" },
           ]}
         />
 
         {/* Heading */}
         <SectionHeading
-          title="Care Homes With Sponsorship in the UK"
-          subtitle="Explore care homes and healthcare-related companies that may provide visa sponsorship opportunities in the UK."
+          title="Manchester Visa Sponsoring Companies"
+          subtitle="Browse companies in Manchester that may provide visa sponsorship opportunities across different industries."
         />
-
-        {/* Popular Cities */}
-        <PopularCities />
 
         {/* 🔥 Loading Skeleton */}
         {loading && (
@@ -103,8 +89,8 @@ function CareHomes() {
         {/* Empty */}
         {!loading && companies.length === 0 && (
           <EmptyState
-            title="No care home companies found"
-            message="We couldn’t find matching care home sponsorship companies right now."
+            title="No Manchester sponsor companies found"
+            message="We couldn’t find matching sponsor companies in Manchester right now."
           />
         )}
 
@@ -112,38 +98,38 @@ function CareHomes() {
         <div className="max-w-3xl mx-auto text-slate-600 text-sm md:text-base leading-relaxed space-y-4">
 
           <h2 className="text-xl font-semibold text-slate-800">
-            Care Home Jobs With Visa Sponsorship in the UK
+            Visa Sponsorship Jobs in Manchester
           </h2>
 
           <p>
-            Care homes and healthcare providers in the UK are among the most
-            common sectors offering visa sponsorship opportunities. Due to
-            ongoing demand, many employers actively recruit international
-            candidates for caregiving and support roles.
+            Manchester is one of the UK’s major employment hubs and a popular
+            destination for international job seekers looking for visa
+            sponsorship opportunities. The city offers roles across industries
+            such as technology, healthcare, logistics, finance, and retail.
           </p>
 
           <p>
-            Roles such as care assistants, support workers, and nursing staff
-            are often sponsored under the Skilled Worker visa route, making
-            this sector a popular choice for job seekers worldwide.
+            Many companies in Manchester sponsor international candidates under
+            the Skilled Worker visa route. These employers are licensed sponsors
+            and actively hire global talent for specialized positions.
           </p>
 
           <h3 className="text-lg font-semibold text-slate-800">
-            How to Find Care Home Sponsorship Jobs
+            How to Find Sponsorship Jobs in Manchester
           </h3>
 
           <p>
-            CareerRoost simplifies your search by providing a structured list
-            of care homes and related employers that may offer sponsorship.
-            Instead of browsing multiple job sites, you can explore relevant
-            companies in one place.
+            CareerRoost helps you discover companies that may offer sponsorship
+            opportunities in Manchester. Instead of searching multiple job
+            platforms, you can explore a structured list of companies in one
+            place.
           </p>
 
           <ul className="list-disc pl-5 space-y-2">
-            <li>Focus on caregiving and healthcare roles</li>
-            <li>Search by city for location-based opportunities</li>
+            <li>Focus on high-demand sectors like IT and healthcare</li>
+            <li>Search companies by location and industry</li>
             <li>Check visa eligibility requirements</li>
-            <li>Apply directly through official company websites</li>
+            <li>Apply directly through company career pages</li>
           </ul>
 
           <h3 className="text-lg font-semibold text-slate-800">
@@ -151,10 +137,10 @@ function CareHomes() {
           </h3>
 
           <ul className="list-disc pl-5 space-y-2">
-            <li>Focused on visa sponsorship companies</li>
+            <li>Centralized list of sponsorship companies</li>
             <li>Easy filtering by city and sector</li>
             <li>Saves time compared to manual searching</li>
-            <li>Centralized and organized data</li>
+            <li>Continuously improving data</li>
           </ul>
 
         </div>
@@ -164,4 +150,4 @@ function CareHomes() {
   );
 }
 
-export default CareHomes;
+export default ManchesterSponsors;

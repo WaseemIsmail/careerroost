@@ -4,16 +4,16 @@ import SeoHead from "../../components/seo/SeoHead";
 import SectionHeading from "../../components/common/SectionHeading";
 import CompanyCard from "../../components/sponsor/CompanyCard";
 import EmptyState from "../../components/common/EmptyState";
-import PopularCities from "../../components/sponsor/PopularCities";
 import Breadcrumbs from "../../components/common/Breadcrumbs";
+import PopularCities from "../../components/sponsor/PopularCities";
 import { getAllSponsors } from "../../services/sponsorService";
 
-function CareHomes() {
+function Healthcare() {
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadCareHomes = async () => {
+    const loadHealthcareSponsors = async () => {
       try {
         setLoading(true);
 
@@ -27,9 +27,15 @@ function CareHomes() {
             company.sponsorship &&
             (
               sector.includes("healthcare") ||
+              sector.includes("health care") ||
+              sector.includes("medical") ||
+              sector.includes("hospital") ||
               sector.includes("care") ||
-              name.includes("care") ||
-              name.includes("home")
+              name.includes("health") ||
+              name.includes("medical") ||
+              name.includes("hospital") ||
+              name.includes("clinic") ||
+              name.includes("care")
             )
           );
         });
@@ -37,23 +43,23 @@ function CareHomes() {
         // 🔥 LIMIT for performance
         setCompanies(filtered.slice(0, 30));
       } catch (error) {
-        console.error("Error loading care home companies:", error);
+        console.error("Error loading healthcare sponsors:", error);
         setCompanies([]);
       } finally {
         setLoading(false);
       }
     };
 
-    loadCareHomes();
+    loadHealthcareSponsors();
   }, []);
 
   return (
     <Layout>
       <SeoHead
-        title="Care Homes With Sponsorship in UK | CareerRoost"
-        description="Find care homes in the UK that offer visa sponsorship. Explore caregiving, nursing, and healthcare job opportunities."
-        keywords="care homes sponsorship UK, caregiver jobs UK visa sponsorship, nursing homes UK sponsorship"
-        canonical="/care-homes-with-sponsorship-uk"
+        title="Healthcare Sponsorship Companies UK | CareerRoost"
+        description="Find healthcare companies in the UK that offer visa sponsorship. Explore hospitals, clinics, and care providers hiring international professionals."
+        keywords="healthcare sponsorship UK, hospital jobs UK visa sponsorship, medical companies UK sponsorship"
+        canonical="/healthcare-sponsorship-uk"
       />
 
       <div className="px-4 py-12 max-w-6xl mx-auto space-y-10">
@@ -63,14 +69,14 @@ function CareHomes() {
           items={[
             { label: "Home", path: "/" },
             { label: "Visa Sponsors UK", path: "/companies-that-sponsor-visa-uk" },
-            { label: "Care Homes" },
+            { label: "Healthcare" },
           ]}
         />
 
         {/* Heading */}
         <SectionHeading
-          title="Care Homes With Sponsorship in the UK"
-          subtitle="Explore care homes and healthcare-related companies that may provide visa sponsorship opportunities in the UK."
+          title="Healthcare Sponsorship Companies in the UK"
+          subtitle="Browse healthcare-related companies that may provide visa sponsorship opportunities across the UK."
         />
 
         {/* Popular Cities */}
@@ -103,8 +109,8 @@ function CareHomes() {
         {/* Empty */}
         {!loading && companies.length === 0 && (
           <EmptyState
-            title="No care home companies found"
-            message="We couldn’t find matching care home sponsorship companies right now."
+            title="No healthcare sponsorship companies found"
+            message="We couldn’t find matching healthcare sponsorship companies right now."
           />
         )}
 
@@ -112,37 +118,36 @@ function CareHomes() {
         <div className="max-w-3xl mx-auto text-slate-600 text-sm md:text-base leading-relaxed space-y-4">
 
           <h2 className="text-xl font-semibold text-slate-800">
-            Care Home Jobs With Visa Sponsorship in the UK
+            Healthcare Jobs With Visa Sponsorship in the UK
           </h2>
 
           <p>
-            Care homes and healthcare providers in the UK are among the most
-            common sectors offering visa sponsorship opportunities. Due to
-            ongoing demand, many employers actively recruit international
-            candidates for caregiving and support roles.
+            The healthcare sector is one of the largest employers offering visa
+            sponsorship in the UK. Hospitals, clinics, care homes, and medical
+            organizations regularly recruit international professionals to fill
+            critical roles.
           </p>
 
           <p>
-            Roles such as care assistants, support workers, and nursing staff
-            are often sponsored under the Skilled Worker visa route, making
-            this sector a popular choice for job seekers worldwide.
+            Many of these employers are licensed sponsors under the Skilled
+            Worker visa route, allowing them to hire professionals such as
+            nurses, doctors, caregivers, and healthcare assistants from abroad.
           </p>
 
           <h3 className="text-lg font-semibold text-slate-800">
-            How to Find Care Home Sponsorship Jobs
+            How to Find Healthcare Sponsorship Jobs
           </h3>
 
           <p>
-            CareerRoost simplifies your search by providing a structured list
-            of care homes and related employers that may offer sponsorship.
-            Instead of browsing multiple job sites, you can explore relevant
-            companies in one place.
+            CareerRoost helps you explore healthcare companies that may offer
+            sponsorship opportunities. Instead of searching multiple job boards,
+            you can access a structured list of potential employers in one place.
           </p>
 
           <ul className="list-disc pl-5 space-y-2">
-            <li>Focus on caregiving and healthcare roles</li>
-            <li>Search by city for location-based opportunities</li>
-            <li>Check visa eligibility requirements</li>
+            <li>Focus on high-demand roles like nursing and caregiving</li>
+            <li>Search companies by city and sector</li>
+            <li>Check visa eligibility requirements before applying</li>
             <li>Apply directly through official company websites</li>
           </ul>
 
@@ -164,4 +169,4 @@ function CareHomes() {
   );
 }
 
-export default CareHomes;
+export default Healthcare;

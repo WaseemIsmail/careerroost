@@ -4,32 +4,73 @@ import CompanyDetailsCard from "../../components/sponsor/CompanyDetailsCard";
 import { getAllSponsors } from "../../services/sponsorService";
 import { useEffect, useState } from "react";
 import EmptyState from "../../components/common/EmptyState";
+import Breadcrumbs from "../../components/common/Breadcrumbs";
+import { slugify } from "../../utils/seoUtils";
 
 function CompanyDetails() {
   const { name } = useParams();
+
   const [company, setCompany] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const sponsors = getAllSponsors();
+    const loadCompany = async () => {
+      try {
+        setLoading(true);
 
-    const found = sponsors.find(
-      (item) => item.name.toLowerCase() === name.toLowerCase()
-    );
+        const sponsors = await getAllSponsors();
 
-    setCompany(found);
+        const decodedName = decodeURIComponent(name);
+
+        // ✅ FIXED MATCHING USING SLUG
+        const found = sponsors.find(
+          (item) => slugify(item.name) === decodedName
+        );
+
+        setCompany(found || null);
+      } catch (error) {
+        console.error("Error loading company details:", error);
+        setCompany(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCompany();
   }, [name]);
 
   return (
     <Layout>
-      {/* If company found */}
-      {company ? (
-        <CompanyDetailsCard company={company} />
-      ) : (
-        <EmptyState
-          title="Company not found"
-          message="We couldn’t find details for this company."
+      <div className="px-4 py-8 max-w-6xl mx-auto space-y-6">
+
+        {/* Breadcrumbs */}
+        <Breadcrumbs
+          items={[
+            { label: "Home", path: "/" },
+            { label: "UK Directory", path: "/uk" },
+            { label: company?.name || "Company" },
+          ]}
         />
-      )}
+
+        {/* Loading */}
+        {loading && (
+          <div className="h-40 bg-slate-100 animate-pulse rounded-2xl" />
+        )}
+
+        {/* Data */}
+        {!loading && company && (
+          <CompanyDetailsCard company={company} />
+        )}
+
+        {/* Not found */}
+        {!loading && !company && (
+          <EmptyState
+            title="Company not found"
+            message="We couldn’t find details for this company."
+          />
+        )}
+
+      </div>
     </Layout>
   );
 }

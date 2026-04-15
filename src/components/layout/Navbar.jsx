@@ -7,8 +7,9 @@ function Navbar() {
 
   const navLinks = [
     { name: "Home", path: "/" },
-    { name: "Directory", path: "/uk/directory" },
     { name: "UK Sponsors", path: "/uk" },
+    { name: "Saved", path: "/saved" },
+    { name: "FAQ", path: "/faq" },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -16,6 +17,7 @@ function Navbar() {
   return (
     <nav className="sticky top-0 z-50 bg-slate-950 border-b border-slate-800">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+
         {/* LOGO */}
         <Link
           to="/"
@@ -24,7 +26,7 @@ function Navbar() {
           CareerRoost
         </Link>
 
-        {/* NAV LINKS */}
+        {/* DESKTOP NAV */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <Link
@@ -46,6 +48,8 @@ function Navbar() {
 
         {/* RIGHT SIDE */}
         <div className="flex items-center gap-3">
+
+          {/* FIND SPONSOR CTA */}
           <Link
             to="/uk/checker"
             className="hidden md:inline-block bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-700 transition shadow-sm"
@@ -53,7 +57,7 @@ function Navbar() {
             Find Sponsors
           </Link>
 
-          {/* MOBILE TOGGLE */}
+          {/* MOBILE MENU BUTTON */}
           <button
             onClick={() => setOpen(!open)}
             className="md:hidden text-slate-200 text-2xl"
@@ -66,6 +70,7 @@ function Navbar() {
       {/* MOBILE MENU */}
       {open && (
         <div className="md:hidden bg-slate-950 border-t border-slate-800 px-4 py-4 space-y-4">
+
           {navLinks.map((link) => (
             <Link
               key={link.name}
@@ -81,6 +86,32 @@ function Navbar() {
             </Link>
           ))}
 
+          {/* EXTRA LINKS */}
+          <Link
+            to="/companies-that-sponsor-visa-uk"
+            onClick={() => setOpen(false)}
+            className="block text-sm text-slate-300 hover:text-white"
+          >
+            Visa Sponsors UK
+          </Link>
+
+          <Link
+            to="/london-visa-sponsors-uk"
+            onClick={() => setOpen(false)}
+            className="block text-sm text-slate-300 hover:text-white"
+          >
+            London Sponsors
+          </Link>
+
+          <Link
+            to="/how-it-works"
+            onClick={() => setOpen(false)}
+            className="block text-sm text-slate-300 hover:text-white"
+          >
+            How It Works
+          </Link>
+
+          {/* CTA */}
           <Link
             to="/uk/checker"
             onClick={() => setOpen(false)}

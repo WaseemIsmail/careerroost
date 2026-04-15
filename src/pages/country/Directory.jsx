@@ -5,6 +5,8 @@ import CompanyCard from "../../components/sponsor/CompanyCard";
 import FilterSidebar from "../../components/sponsor/FilterSidebar";
 import EmptyState from "../../components/common/EmptyState";
 import Pagination from "../../components/common/Pagination";
+import SectionHeading from "../../components/common/SectionHeading";
+import Breadcrumbs from "../../components/common/Breadcrumbs";
 import { getAllSponsors } from "../../services/sponsorService";
 
 function Directory() {
@@ -32,7 +34,6 @@ function Directory() {
       setLoading(true);
       try {
         const sponsors = await getAllSponsors();
-
         if (!Array.isArray(sponsors)) return;
 
         setTotalCount(sponsors.length);
@@ -45,11 +46,10 @@ function Directory() {
           setLoading(false);
         }
 
-        // background full load
+        // background load
         setTimeout(() => {
           if (isMounted) setData(sponsors);
         }, 100);
-
       } catch (err) {
         console.error(err);
         setData([]);
@@ -58,10 +58,7 @@ function Directory() {
     };
 
     loadData();
-
-    return () => {
-      isMounted = false;
-    };
+    return () => (isMounted = false);
   }, []);
 
   // 🔍 FILTER + SEARCH + SORT
@@ -69,7 +66,6 @@ function Directory() {
     let results = [...data];
     const q = query.trim().toLowerCase();
 
-    // SEARCH
     if (q) {
       results = results.filter(
         (item) =>
@@ -80,7 +76,6 @@ function Directory() {
       );
     }
 
-    // FILTERS
     if (filters.city) {
       results = results.filter(
         (i) => (i.city || "").toLowerCase() === filters.city.toLowerCase()
@@ -99,40 +94,28 @@ function Directory() {
       );
     }
 
-    // SORTING
+    // SORT
     if (sortOption === "name") {
-      results.sort((a, b) =>
-        (a.name || "").localeCompare(b.name || "")
-      );
+      results.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
     }
-
     if (sortOption === "name_desc") {
-      results.sort((a, b) =>
-        (b.name || "").localeCompare(a.name || "")
-      );
+      results.sort((a, b) => (b.name || "").localeCompare(a.name || ""));
     }
-
     if (sortOption === "city") {
-      results.sort((a, b) =>
-        (a.city || "").localeCompare(b.city || "")
-      );
+      results.sort((a, b) => (a.city || "").localeCompare(b.city || ""));
     }
-
     if (sortOption === "sector") {
-      results.sort((a, b) =>
-        (a.sector || "").localeCompare(b.sector || "")
-      );
+      results.sort((a, b) => (a.sector || "").localeCompare(b.sector || ""));
     }
 
     return results;
   }, [data, query, filters, sortOption]);
 
-  // reset page
   useEffect(() => {
     setCurrentPage(1);
   }, [query, filters, sortOption, itemsPerPage]);
 
-  // 📊 DROPDOWN DATA
+  // 📊 FILTER OPTIONS
   const cities = [...new Set(data.map((i) => i.city).filter(Boolean))];
   const sectors = [...new Set(data.map((i) => i.sector).filter(Boolean))];
   const routes = [...new Set(data.map((i) => i.route).filter(Boolean))];
@@ -147,24 +130,35 @@ function Directory() {
 
   return (
     <Layout>
-      <div className="space-y-6">
+      <div className="px-4 py-8 max-w-7xl mx-auto space-y-6">
 
-        {/* HERO */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border">
-          <h1 className="text-2xl font-bold">UK Sponsor Directory</h1>
+        {/* Breadcrumbs */}
+        <Breadcrumbs
+          items={[
+            { label: "Home", path: "/" },
+            { label: "UK Directory" },
+          ]}
+        />
 
-          <div className="mt-4">
-            <SearchBar
-              value={query}
-              onChange={setQuery}
-              placeholder="Search companies..."
-            />
-          </div>
+        {/* Heading */}
+        <SectionHeading
+          title="UK Sponsor Directory"
+          subtitle="Search, filter, and explore visa sponsoring companies in the UK."
+          align="left"
+        />
+
+        {/* SEARCH */}
+        <div className="bg-white p-5 rounded-2xl shadow-sm border">
+          <SearchBar
+            value={query}
+            onChange={setQuery}
+            placeholder="Search companies, city, sector..."
+          />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
 
-          {/* FILTER SIDEBAR */}
+          {/* SIDEBAR */}
           <FilterSidebar
             filters={filters}
             setFilters={setFilters}
@@ -176,7 +170,7 @@ function Directory() {
           {/* RESULTS */}
           <div>
 
-            {/* 🔥 HEADER BAR */}
+            {/* HEADER */}
             <div className="bg-white border rounded-2xl p-4 shadow-sm mb-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
 
               <p className="text-sm text-gray-600">
@@ -186,53 +180,42 @@ function Directory() {
               <div className="flex flex-wrap items-center gap-3">
 
                 {/* SORT */}
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-500">Sort by</span>
-                  <select
-                    value={sortOption}
-                    onChange={(e) => setSortOption(e.target.value)}
-                    className="border rounded-lg px-3 py-2 text-sm"
-                  >
-                    <option value="name">Company Name</option>
-                    <option value="name_desc">Z → A</option>
-                    <option value="city">City</option>
-                    <option value="sector">Sector</option>
-                  </select>
-                </div>
+                <select
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value)}
+                  className="border rounded-lg px-3 py-2 text-sm"
+                >
+                  <option value="name">Name</option>
+                  <option value="name_desc">Z → A</option>
+                  <option value="city">City</option>
+                  <option value="sector">Sector</option>
+                </select>
 
                 {/* PAGE SIZE */}
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-500">Posts Per Page</span>
-                  <select
-                    value={itemsPerPage}
-                    onChange={(e) => setItemsPerPage(Number(e.target.value))}
-                    className="border rounded-lg px-3 py-2 text-sm"
-                  >
-                    <option value={20}>20</option>
-                    <option value={50}>50</option>
-                    <option value={100}>100</option>
-                  </select>
-                </div>
+                <select
+                  value={itemsPerPage}
+                  onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                  className="border rounded-lg px-3 py-2 text-sm"
+                >
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                </select>
 
-                {/* GRID / ROW */}
+                {/* VIEW */}
                 <div className="flex border rounded-lg overflow-hidden">
                   <button
                     onClick={() => setViewType("grid")}
-                    className={`px-4 py-2 text-sm ${
-                      viewType === "grid"
-                        ? "bg-blue-600 text-white"
-                        : "bg-white"
+                    className={`px-4 py-2 ${
+                      viewType === "grid" ? "bg-blue-600 text-white" : ""
                     }`}
                   >
                     Grid
                   </button>
-
                   <button
                     onClick={() => setViewType("row")}
-                    className={`px-4 py-2 text-sm ${
-                      viewType === "row"
-                        ? "bg-blue-600 text-white"
-                        : "bg-white"
+                    className={`px-4 py-2 ${
+                      viewType === "row" ? "bg-blue-600 text-white" : ""
                     }`}
                   >
                     Row
@@ -243,7 +226,13 @@ function Directory() {
             </div>
 
             {/* LOADING */}
-            {loading && <p>Loading...</p>}
+            {loading && (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="h-40 bg-slate-100 animate-pulse rounded-2xl" />
+                ))}
+              </div>
+            )}
 
             {/* DATA */}
             {!loading && paginatedData.length > 0 && (
@@ -276,7 +265,7 @@ function Directory() {
             {!loading && filteredData.length === 0 && (
               <EmptyState
                 title="No sponsors found"
-                message="Try adjusting filters or search"
+                message="Try searching for 'London', 'IT', or 'Healthcare'"
               />
             )}
           </div>

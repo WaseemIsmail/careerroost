@@ -1,5 +1,34 @@
+import { useState, useEffect } from "react";
+
 function CompanyDetailsCard({ company }) {
   if (!company) return null;
+
+  const [saved, setSaved] = useState(false);
+
+  // ✅ Check if saved
+  useEffect(() => {
+    const savedList = JSON.parse(localStorage.getItem("savedCompanies")) || [];
+    const exists = savedList.some((c) => c.name === company.name);
+    setSaved(exists);
+  }, [company]);
+
+  // ⭐ Toggle Save
+  const toggleSave = () => {
+    let savedList = JSON.parse(localStorage.getItem("savedCompanies")) || [];
+
+    if (saved) {
+      savedList = savedList.filter((c) => c.name !== company.name);
+    } else {
+      savedList.push(company);
+    }
+
+    localStorage.setItem("savedCompanies", JSON.stringify(savedList));
+    setSaved(!saved);
+  };
+
+  // Avatar letter
+  const initial =
+    company.name?.replace(/[^a-zA-Z]/g, "").charAt(0).toUpperCase() || "C";
 
   return (
     <div className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
@@ -23,25 +52,40 @@ function CompanyDetailsCard({ company }) {
               {company.county ? `, ${company.county}` : ""}
             </p>
 
-            {/* Website Button */}
+            {/* 🔗 Website (only if exists) */}
             {company.website && (
               <a
                 href={company.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block mt-4 text-sm font-medium text-blue-600 hover:underline"
+                className="inline-block mt-3 text-sm text-blue-600 hover:underline"
               >
-                🌐 Visit Website
+                Visit Website →
               </a>
             )}
           </div>
 
-          {/* Logo */}
-          <div className="shrink-0">
+          {/* Right */}
+          <div className="flex items-center gap-3">
+
+            {/* ⭐ Save Button */}
+            <button
+              onClick={toggleSave}
+              className={`px-4 py-2 rounded-xl text-sm font-medium border transition ${
+                saved
+                  ? "bg-yellow-100 text-yellow-700 border-yellow-300"
+                  : "bg-white text-slate-600 border-slate-300 hover:bg-slate-100"
+              }`}
+            >
+              {saved ? "★ Saved" : "☆ Save"}
+            </button>
+
+            {/* Avatar */}
             <div className="inline-flex h-16 w-16 items-center justify-center rounded-3xl bg-blue-50 text-blue-600 text-2xl font-bold border border-blue-100">
-              {company.name?.charAt(0)?.toUpperCase() || "C"}
+              {initial}
             </div>
           </div>
+
         </div>
 
         {/* Pills */}
@@ -59,7 +103,6 @@ function CompanyDetailsCard({ company }) {
             Rating: {company.rating || "N/A"}
           </span>
 
-          {/* Sponsorship Badge */}
           <span
             className={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium border ${
               company.sponsorship
@@ -67,7 +110,9 @@ function CompanyDetailsCard({ company }) {
                 : "bg-red-50 text-red-700 border-red-100"
             }`}
           >
-            {company.sponsorship ? "✔ Sponsorship Available" : "✖ No Sponsorship"}
+            {company.sponsorship
+              ? "✔ Sponsorship Available"
+              : "✖ No Sponsorship"}
           </span>
 
         </div>
@@ -94,7 +139,7 @@ function CompanyDetailsCard({ company }) {
   );
 }
 
-/* 🔥 Reusable small component */
+/* 🔥 Reusable component */
 function DetailItem({ label, value }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 hover:bg-white transition">

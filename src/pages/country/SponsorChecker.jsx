@@ -11,7 +11,7 @@ function SponsorChecker() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ LOAD DATA PROPERLY
+  // 🔥 LOAD DATA
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -28,7 +28,7 @@ function SponsorChecker() {
     loadData();
   }, []);
 
-  // ✅ DEBOUNCE
+  // 🔥 DEBOUNCE
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(query);
@@ -37,10 +37,9 @@ function SponsorChecker() {
     return () => clearTimeout(timer);
   }, [query]);
 
-  // ✅ SAFE SEARCH
+  // 🔥 SEARCH LOGIC
   const results = useMemo(() => {
     if (!debouncedQuery.trim()) return [];
-    if (!Array.isArray(data)) return [];
 
     const term = debouncedQuery.toLowerCase();
 
@@ -53,53 +52,77 @@ function SponsorChecker() {
 
   return (
     <Layout>
-      <div className="max-w-3xl mx-auto text-center">
+      <div className="px-4 py-10 max-w-5xl mx-auto space-y-8">
 
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
-          Sponsor Checker 🔍
-        </h1>
+        {/* HEADER */}
+        <div className="text-center">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+            Sponsor Checker 🔍
+          </h1>
 
-        <p className="text-gray-600 mt-3 mb-6">
-          Check if a company provides visa sponsorship in the UK.
-        </p>
-
-        <SearchBar
-          value={query}
-          onChange={setQuery}
-          placeholder="Enter company name (e.g., Deloitte, NHS...)"
-        />
-      </div>
-
-      {/* RESULTS */}
-      <div className="mt-10 px-4">
-
-        {/* 🔥 LOADING FIX */}
-        {loading && (
-          <p className="text-center text-gray-500">
-            Loading sponsors...
+          <p className="text-gray-600 mt-3">
+            Check if a company provides visa sponsorship in the UK.
           </p>
-        )}
+        </div>
 
-        {!loading && debouncedQuery && results.length > 0 && (
-          <>
-            <p className="text-sm text-slate-500 mb-4 text-center">
-              Showing top {results.length} results
-            </p>
+        {/* SEARCH */}
+        <div className="bg-white border rounded-2xl shadow-sm p-5">
+          <SearchBar
+            value={query}
+            onChange={setQuery}
+            placeholder="Search company (e.g., Deloitte, NHS...)"
+          />
+        </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {results.map((company, index) => (
-                <CompanyCard key={index} company={company} />
+        {/* RESULTS */}
+        <div>
+
+          {/* LOADING */}
+          {loading && (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className="h-40 bg-slate-100 animate-pulse rounded-2xl"
+                />
               ))}
             </div>
-          </>
-        )}
+          )}
 
-        {!loading && debouncedQuery && results.length === 0 && (
-          <EmptyState
-            title="No sponsor found"
-            message="This company may not provide visa sponsorship or is not in our database."
-          />
-        )}
+          {/* NO INPUT */}
+          {!loading && !debouncedQuery && (
+            <p className="text-center text-slate-400 text-sm">
+              Start typing to search for companies...
+            </p>
+          )}
+
+          {/* RESULTS */}
+          {!loading && debouncedQuery && results.length > 0 && (
+            <>
+              <p className="text-sm text-slate-500 mb-4 text-center">
+                Showing {results.length} matching companies
+              </p>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {results.map((company, index) => (
+                  <CompanyCard
+                    key={company.name || index}
+                    company={company}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* EMPTY */}
+          {!loading && debouncedQuery && results.length === 0 && (
+            <EmptyState
+              title="No sponsor found"
+              message="This company may not provide visa sponsorship or is not in our database."
+            />
+          )}
+
+        </div>
       </div>
     </Layout>
   );

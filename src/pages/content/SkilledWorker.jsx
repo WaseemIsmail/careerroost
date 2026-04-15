@@ -4,56 +4,46 @@ import SeoHead from "../../components/seo/SeoHead";
 import SectionHeading from "../../components/common/SectionHeading";
 import CompanyCard from "../../components/sponsor/CompanyCard";
 import EmptyState from "../../components/common/EmptyState";
-import PopularCities from "../../components/sponsor/PopularCities";
 import Breadcrumbs from "../../components/common/Breadcrumbs";
+import PopularCities from "../../components/sponsor/PopularCities";
 import { getAllSponsors } from "../../services/sponsorService";
 
-function CareHomes() {
+function SkilledWorker() {
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadCareHomes = async () => {
+    const loadSkilledWorkerSponsors = async () => {
       try {
         setLoading(true);
 
         const data = await getAllSponsors();
 
         const filtered = data.filter((company) => {
-          const sector = (company.sector || "").toLowerCase();
-          const name = (company.name || "").toLowerCase();
-
-          return (
-            company.sponsorship &&
-            (
-              sector.includes("healthcare") ||
-              sector.includes("care") ||
-              name.includes("care") ||
-              name.includes("home")
-            )
-          );
+          const route = (company.route || "").toLowerCase();
+          return company.sponsorship && route.includes("skilled");
         });
 
-        // 🔥 LIMIT for performance
+        // 🔥 LIMIT (important for speed)
         setCompanies(filtered.slice(0, 30));
       } catch (error) {
-        console.error("Error loading care home companies:", error);
+        console.error("Error loading Skilled Worker sponsors:", error);
         setCompanies([]);
       } finally {
         setLoading(false);
       }
     };
 
-    loadCareHomes();
+    loadSkilledWorkerSponsors();
   }, []);
 
   return (
     <Layout>
       <SeoHead
-        title="Care Homes With Sponsorship in UK | CareerRoost"
-        description="Find care homes in the UK that offer visa sponsorship. Explore caregiving, nursing, and healthcare job opportunities."
-        keywords="care homes sponsorship UK, caregiver jobs UK visa sponsorship, nursing homes UK sponsorship"
-        canonical="/care-homes-with-sponsorship-uk"
+        title="Skilled Worker Visa Sponsors UK | CareerRoost"
+        description="Find companies in the UK that sponsor Skilled Worker visas. Explore jobs by city, sector, and industry."
+        keywords="skilled worker visa sponsors UK, UK sponsorship companies, jobs with sponsorship UK"
+        canonical="/skilled-worker-sponsors-uk"
       />
 
       <div className="px-4 py-12 max-w-6xl mx-auto space-y-10">
@@ -63,14 +53,14 @@ function CareHomes() {
           items={[
             { label: "Home", path: "/" },
             { label: "Visa Sponsors UK", path: "/companies-that-sponsor-visa-uk" },
-            { label: "Care Homes" },
+            { label: "Skilled Worker" },
           ]}
         />
 
         {/* Heading */}
         <SectionHeading
-          title="Care Homes With Sponsorship in the UK"
-          subtitle="Explore care homes and healthcare-related companies that may provide visa sponsorship opportunities in the UK."
+          title="Skilled Worker Visa Sponsoring Companies"
+          subtitle="Explore companies in the UK that may provide sponsorship under the Skilled Worker visa route."
         />
 
         {/* Popular Cities */}
@@ -103,8 +93,8 @@ function CareHomes() {
         {/* Empty */}
         {!loading && companies.length === 0 && (
           <EmptyState
-            title="No care home companies found"
-            message="We couldn’t find matching care home sponsorship companies right now."
+            title="No Skilled Worker sponsors found"
+            message="We couldn’t find matching Skilled Worker sponsor companies right now."
           />
         )}
 
@@ -112,38 +102,37 @@ function CareHomes() {
         <div className="max-w-3xl mx-auto text-slate-600 text-sm md:text-base leading-relaxed space-y-4">
 
           <h2 className="text-xl font-semibold text-slate-800">
-            Care Home Jobs With Visa Sponsorship in the UK
+            What is the Skilled Worker Visa?
           </h2>
 
           <p>
-            Care homes and healthcare providers in the UK are among the most
-            common sectors offering visa sponsorship opportunities. Due to
-            ongoing demand, many employers actively recruit international
-            candidates for caregiving and support roles.
+            The Skilled Worker visa is one of the most common routes for
+            international professionals to work in the UK. It allows employers
+            to hire talent from outside the UK for roles that require specific
+            skills and qualifications.
           </p>
 
           <p>
-            Roles such as care assistants, support workers, and nursing staff
-            are often sponsored under the Skilled Worker visa route, making
-            this sector a popular choice for job seekers worldwide.
+            Many companies across industries such as healthcare, technology,
+            logistics, and finance may offer sponsorship under this route.
+            Employers must be licensed sponsors to hire international workers.
           </p>
 
           <h3 className="text-lg font-semibold text-slate-800">
-            How to Find Care Home Sponsorship Jobs
+            How to Find Skilled Worker Sponsors
           </h3>
 
           <p>
-            CareerRoost simplifies your search by providing a structured list
-            of care homes and related employers that may offer sponsorship.
-            Instead of browsing multiple job sites, you can explore relevant
-            companies in one place.
+            CareerRoost simplifies the process by providing a structured list of
+            companies that may sponsor Skilled Worker visas. Instead of searching
+            multiple job platforms, you can explore opportunities in one place.
           </p>
 
           <ul className="list-disc pl-5 space-y-2">
-            <li>Focus on caregiving and healthcare roles</li>
-            <li>Search by city for location-based opportunities</li>
-            <li>Check visa eligibility requirements</li>
-            <li>Apply directly through official company websites</li>
+            <li>Focus on high-demand sectors like IT and healthcare</li>
+            <li>Search companies by city and industry</li>
+            <li>Check visa eligibility requirements before applying</li>
+            <li>Apply directly through company career pages</li>
           </ul>
 
           <h3 className="text-lg font-semibold text-slate-800">
@@ -151,10 +140,10 @@ function CareHomes() {
           </h3>
 
           <ul className="list-disc pl-5 space-y-2">
-            <li>Focused on visa sponsorship companies</li>
+            <li>Centralized list of sponsorship companies</li>
             <li>Easy filtering by city and sector</li>
             <li>Saves time compared to manual searching</li>
-            <li>Centralized and organized data</li>
+            <li>Continuously improving data</li>
           </ul>
 
         </div>
@@ -164,4 +153,4 @@ function CareHomes() {
   );
 }
 
-export default CareHomes;
+export default SkilledWorker;

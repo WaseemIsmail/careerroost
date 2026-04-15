@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://careerroost.netlify.app/sitemap.xml

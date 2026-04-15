@@ -3,43 +3,102 @@ import { useEffect, useState } from "react";
 import Layout from "../../components/layout/Layout";
 import CompanyCard from "../../components/sponsor/CompanyCard";
 import EmptyState from "../../components/common/EmptyState";
+import Breadcrumbs from "../../components/common/Breadcrumbs";
+import SectionHeading from "../../components/common/SectionHeading";
 import { getAllSponsors } from "../../services/sponsorService";
+
+const formatSlug = (text = "") => {
+  return text.toLowerCase().trim().replace(/\s+/g, "-");
+};
+
+const formatTitle = (text = "") => {
+  return text.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+};
 
 function SectorPage() {
   const { sector } = useParams();
 
   const [companies, setCompanies] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const sponsors = getAllSponsors();
+    const loadData = async () => {
+      try {
+        setLoading(true);
 
-    const filtered = sponsors.filter(
-      (item) =>
-        item.sector &&
-        item.sector.toLowerCase() === sector.toLowerCase()
-    );
+        const sponsors = await getAllSponsors();
 
-    setCompanies(filtered);
+        const filtered = sponsors.filter(
+          (item) =>
+            item.sector &&
+            formatSlug(item.sector) === sector
+        );
+
+        setCompanies(filtered);
+      } catch (err) {
+        console.error("Sector filter error:", err);
+        setCompanies([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
   }, [sector]);
 
   return (
     <Layout>
-      <h2 className="text-2xl font-bold mb-6">
-        {sector} Companies 🏢
-      </h2>
+      <div className="px-4 py-8 max-w-6xl mx-auto space-y-6">
 
-      {companies.length > 0 ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {companies.map((company, index) => (
-            <CompanyCard key={index} company={company} />
-          ))}
-        </div>
-      ) : (
-        <EmptyState
-          title="No companies found"
-          message={`No sponsors found in ${sector} sector.`}
+        {/* Breadcrumbs */}
+        <Breadcrumbs
+          items={[
+            { label: "Home", path: "/" },
+            { label: "UK Directory", path: "/uk" },
+            { label: formatTitle(sector) },
+          ]}
         />
-      )}
+
+        {/* Heading */}
+        <SectionHeading
+          title={`${formatTitle(sector)} Companies 🏢`}
+          subtitle="Explore visa sponsoring companies in this sector."
+          align="left"
+        />
+
+        {/* Loading */}
+        {loading && (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[...Array(6)].map((_, i) => (
+              <div
+                key={i}
+                className="h-40 bg-slate-100 animate-pulse rounded-2xl"
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Data */}
+        {!loading && companies.length > 0 && (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {companies.map((company, index) => (
+              <CompanyCard
+                key={company.name || index}
+                company={company}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Empty */}
+        {!loading && companies.length === 0 && (
+          <EmptyState
+            title="No companies found"
+            message={`No sponsors found in ${formatTitle(sector)} sector.`}
+          />
+        )}
+
+      </div>
     </Layout>
   );
 }

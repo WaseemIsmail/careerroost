@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { slugify } from "../../utils/seoUtils";
 
 // ✅ FIX: get proper letter (no symbols)
 const getInitial = (name) => {
@@ -8,11 +9,15 @@ const getInitial = (name) => {
 };
 
 function CompanyCard({ company, viewType = "grid" }) {
+  const companyName = company?.name || "Unknown Company";
+
+  // ✅ FIXED LINK (SEO friendly)
+  const companyLink = `/uk/company/${slugify(companyName)}`;
 
   // 🔥 ROW VIEW
   if (viewType === "row") {
     return (
-      <Link to={`/uk/company/${company.name}`} className="block group">
+      <Link to={companyLink} className="block group">
         <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl bg-white hover:shadow-md transition">
 
           {/* LEFT */}
@@ -23,14 +28,14 @@ function CompanyCard({ company, viewType = "grid" }) {
               <span className="inline-flex h-12 w-12 items-center justify-center rounded-full 
                 bg-gradient-to-br from-blue-500 to-indigo-600 
                 text-white text-lg font-bold shadow-sm">
-                {getInitial(company.name)}
+                {getInitial(companyName)}
               </span>
             </div>
 
             {/* Info */}
             <div>
               <h3 className="text-lg font-semibold text-slate-900 group-hover:text-blue-600 transition">
-                {company.name}
+                {companyName}
               </h3>
 
               <div className="flex flex-wrap gap-4 mt-1 text-sm text-slate-600">
@@ -46,7 +51,6 @@ function CompanyCard({ company, viewType = "grid" }) {
 
           {/* RIGHT */}
           <div className="flex items-center gap-4">
-
             <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 border border-blue-100">
               {company.route || "Route unavailable"}
             </span>
@@ -55,6 +59,7 @@ function CompanyCard({ company, viewType = "grid" }) {
               View →
             </span>
           </div>
+
         </div>
       </Link>
     );
@@ -62,16 +67,16 @@ function CompanyCard({ company, viewType = "grid" }) {
 
   // 🔥 GRID VIEW
   return (
-    <Link to={`/uk/company/${company.name}`} className="block group">
+    <Link to={companyLink} className="block group">
       <div className="h-full rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg">
-        
+
         {/* Top */}
         <div className="flex items-start justify-between gap-3">
 
           {/* LEFT */}
           <div>
             <h3 className="text-xl font-semibold text-slate-900 group-hover:text-blue-600 transition">
-              {company.name}
+              {companyName}
             </h3>
 
             <div className="mt-3 space-y-2">
@@ -87,19 +92,19 @@ function CompanyCard({ company, viewType = "grid" }) {
             </div>
           </div>
 
-          {/* RIGHT AVATAR */}
+          {/* Avatar */}
           <div className="shrink-0">
             <span className="inline-flex h-12 w-12 items-center justify-center rounded-full 
               bg-gradient-to-br from-blue-500 to-indigo-600 
               text-white text-lg font-bold shadow-sm">
-              {getInitial(company.name)}
+              {getInitial(companyName)}
             </span>
           </div>
+
         </div>
 
         {/* Bottom */}
         <div className="mt-5 flex items-center justify-between gap-3">
-
           <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 border border-blue-100">
             {company.route || "Route unavailable"}
           </span>
@@ -108,6 +113,7 @@ function CompanyCard({ company, viewType = "grid" }) {
             View details →
           </span>
         </div>
+
       </div>
     </Link>
   );
